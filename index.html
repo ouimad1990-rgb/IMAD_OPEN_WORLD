@@ -1,5 +1,49 @@
-IMAD OPEN WORLD 3D88 KM/Hاسحب يمينًا ويسارًا أو استخدم الأزرار للقيادةBMW M4 • مدينة تجريبية ثلاثية الأبعاد
-◀
-▶
-■
-▲
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>IMAD CITY — BMW M4</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101820;color:#fff;font-family:system-ui,Arial,sans-serif;display:flex;justify-content:center}
+main{width:min(100%,520px);padding:12px}.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.brand{font-weight:900;font-size:22px}.sub{font-size:12px;color:#aab8c5}.stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:9px}.pill{background:#1c2b37;border:1px solid #314553;border-radius:10px;padding:7px 10px;font-size:13px}canvas{width:100%;display:block;border-radius:16px;border:1px solid #52606b;background:#76b9e5;touch-action:none}.controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}button{min-height:54px;border:1px solid #40515e;border-radius:12px;background:#1c2b37;color:white;font-weight:800;font-size:17px;touch-action:manipulation}button:active{background:#33516a}.gas{background:#168348;border-color:#24a35e}.small{font-size:13px;color:#bdc8d1;line-height:1.5;margin-top:10px}.overlay{position:relative}.cover{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;background:#07131cdd;border-radius:16px;padding:20px}.cover h1{margin:0 0 8px;font-size:30px}.cover p{max-width:270px;line-height:1.5}.start{background:#facc15;color:#171717;border:0;padding:12px 24px;min-height:48px}.hidden{display:none}
+</style>
+</head>
+<body><main>
+<div class="top"><div><div class="brand">🏙️ IMAD CITY</div><div class="sub">عالم مفتوح خفيف — يعمل دون إنترنت</div></div><div style="text-align:left"><b>BMW M4 🔵</b><div class="sub">نسخة تجريبية</div></div></div>
+<div class="stats"><div class="pill">السرعة: <b id="speed">0</b> كم/س</div><div class="pill">المسافة: <b id="distance">0</b> م</div><div class="pill">النقود: <b id="cash">$500</b></div></div>
+<div class="overlay"><canvas id="game" width="400" height="560" aria-label="لعبة قيادة سيارة في مدينة"></canvas><div id="cover" class="cover"><h1>IMAD CITY</h1><div style="font-size:42px">🚘</div><p>قد سيارة BMW M4 الزرقاء في المدينة واجمع النقاط. لعبة خفيفة تعمل بلا إنترنت.</p><button class="start" id="start">ابدأ القيادة 🚀</button></div></div>
+<div class="controls"><button id="left">⬅️ يسار</button><button id="gas" class="gas">🚀 بنزين</button><button id="right">يمين ➡️</button><button id="brake">🛑 فرامل</button><button id="mission">💰 مهمة +$50</button><button id="reset">↻ إعادة</button></div>
+<div class="small">طريقة اللعب: اضغط باستمرار على البنزين للتحرك، واستعمل اليمين واليسار لتغيير المسار. اضغط فرامل لتخفيف السرعة. هذا نموذج خفيف ثنائي الأبعاد بمنظور محاكاة، وليس لعبة GTA ثلاثية الأبعاد كاملة.</div>
+</main>
+<script>
+(()=>{const c=document.getElementById('game'),ctx=c.getContext('2d'),W=400,H=560;let started=false,speed=0,dist=0,cash=500,offset=0,lane=0,steer=0,last=0,raf=0,missionCount=0;const keys={left:false,right:false,gas:false,brake:false};const $=id=>document.getElementById(id);
+function car(x,y,s=1){ctx.save();ctx.translate(x,y);ctx.scale(s,s);
+ctx.fillStyle='#101820';ctx.fillRect(-23,-25,8,21);ctx.fillRect(15,-25,8,21);ctx.fillRect(-23,14,8,21);ctx.fillRect(15,14,8,21);
+ctx.fillStyle='#0865c7';ctx.beginPath();ctx.moveTo(-18,-35);ctx.quadraticCurveTo(-23,-29,-23,-12);ctx.lineTo(-21,25);ctx.quadraticCurveTo(-20,32,-12,33);ctx.lineTo(12,33);ctx.quadraticCurveTo(20,32,21,25);ctx.lineTo(23,-12);ctx.quadraticCurveTo(23,-29,18,-35);ctx.closePath();ctx.fill();
+ctx.fillStyle='#a5e4ff';ctx.beginPath();ctx.moveTo(-14,-24);ctx.lineTo(14,-24);ctx.lineTo(17,-8);ctx.lineTo(-17,-8);ctx.closePath();ctx.fill();
+ctx.fillStyle='#18344e';ctx.fillRect(-17,0,34,12);ctx.fillStyle='#fef3c7';ctx.fillRect(-17,-31,7,4);ctx.fillRect(10,-31,7,4);ctx.fillStyle='#fb3349';ctx.fillRect(-17,25,7,4);ctx.fillRect(10,25,7,4);
+ctx.fillStyle='#e8f2fa';ctx.font='bold 7px Arial';ctx.textAlign='center';ctx.fillText('M4',0,20);ctx.restore()}
+function draw(){ctx.clearRect(0,0,W,H);let sky=ctx.createLinearGradient(0,0,0,290);sky.addColorStop(0,'#58a9e5');sky.addColorStop(1,'#e9d4ad');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+ctx.fillStyle='#f9d98b';ctx.beginPath();ctx.arc(315,85,27,0,7);ctx.fill();
+for(let i=0;i<13;i++){let bx=i*36-(offset*.25%36),bh=65+(i*31%100);ctx.fillStyle=['#718493','#93a5b1','#435a6d','#b4c2ca'][i%4];ctx.fillRect(bx,205-bh,30,bh+90);ctx.fillStyle='#bde4ed';for(let y=215-bh;y<285;y+=16)for(let x=bx+5;x<bx+26;x+=11)ctx.fillRect(x,y,5,7)}
+ctx.fillStyle='#357344';ctx.fillRect(0,285,400,275);
+ctx.fillStyle='#41474d';ctx.beginPath();ctx.moveTo(145,275);ctx.lineTo(255,275);ctx.lineTo(405,560);ctx.lineTo(-5,560);ctx.closePath();ctx.fill();
+ctx.strokeStyle='#f7f1c9';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(145,275);ctx.lineTo(-5,560);ctx.moveTo(255,275);ctx.lineTo(405,560);ctx.stroke();
+for(let i=0;i<9;i++){let z=((i*46+offset*2.4)%250)/250,y=285+z*270,cx=200+lane*8*z,ww=2+z*3,hh=8+z*14;ctx.fillStyle='#f4edcc';ctx.fillRect(cx-ww*13,y,ww,hh);ctx.fillRect(cx+ww*13,y,ww,hh)}
+for(let i=0;i<5;i++){let z=((i*67+offset*1.2)%250)/250,y=280+z*220,side=i%2?1:-1,bx=200+side*(85+z*140)+lane*z*10;ctx.fillStyle='#6e5239';ctx.fillRect(bx-3,y-18*z,6,22*z);ctx.fillStyle='#247044';ctx.beginPath();ctx.arc(bx,y-20*z,7+14*z,0,7);ctx.fill()}
+if(speed>30){for(let i=0;i<4;i++){let y=330+((i*60+offset*2)%180),x=200+(i%2?1:-1)*(38+(y-330)*.55);ctx.fillStyle=['#eee','#f4c542','#db4747'][i%3];ctx.fillRect(x-10,y-18,20,27);ctx.fillStyle='#9bdcf6';ctx.fillRect(x-7,y-14,14,7)}}
+car(200+lane*30+steer*12,445,1.28);
+ctx.fillStyle='#07131ccc';ctx.fillRect(12,12,142,45);ctx.fillStyle='#fff';ctx.textAlign='left';ctx.font='bold 14px Arial';ctx.fillText('IMAD CITY',22,31);ctx.font='11px Arial';ctx.fillText('BMW M4 • FREE DRIVE',22,47);
+ctx.fillStyle='#07131ccc';ctx.fillRect(270,12,118,45);ctx.fillStyle='#facc15';ctx.textAlign='right';ctx.font='bold 17px Arial';ctx.fillText(Math.round(speed)+' KM/H',378,33);ctx.fillStyle='#fff';ctx.font='11px Arial';ctx.fillText(Math.round(dist)+' m',378,48)}
+function ui(){$('speed').textContent=Math.round(speed);$('distance').textContent=Math.floor(dist);$('cash').textContent='$'+cash}
+function frame(t){if(!started)return;let dt=Math.min((t-last)/16.67||1,2);last=t;if(keys.gas)speed=Math.min(220,speed+0.65*dt);else speed=Math.max(0,speed-0.16*dt);if(keys.brake)speed=Math.max(0,speed-2.4*dt);if(keys.left)steer=Math.max(-1,steer-.08*dt);else if(keys.right)steer=Math.min(1,steer+.08*dt);else steer*=Math.pow(.9,dt);lane=Math.max(-3,Math.min(3,lane+steer*speed*.0009*dt));offset+=speed*.045*dt;dist+=speed*.008*dt;draw();ui();raf=requestAnimationFrame(frame)}
+function begin(){if(started)return;started=true;$('cover').classList.add('hidden');last=performance.now();raf=requestAnimationFrame(frame)}
+$('start').addEventListener('click',begin);
+function bind(id,key){let b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();keys[key]=true;b.setPointerCapture(e.pointerId)});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>keys[key]=false))}
+bind('left','left');bind('right','right');bind('gas','gas');bind('brake','brake');
+$('mission').addEventListener('click',()=>{cash+=50;missionCount++;ui();if(!started)alert('ربحت $50! اضغط ابدأ القيادة للانطلاق.')});
+$('reset').addEventListener('click',()=>{started=false;cancelAnimationFrame(raf);speed=0;dist=0;offset=0;lane=0;steer=0;Object.keys(keys).forEach(k=>keys[k]=false);$('cover').classList.remove('hidden');$('start').textContent='ابدأ من جديد 🚀';draw();ui()});
+window.addEventListener('keydown',e=>{const m={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'gas',ArrowDown:'brake'};if(m[e.key]){e.preventDefault();keys[m[e.key]]=true}});window.addEventListener('keyup',e=>{const m={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'gas',ArrowDown:'brake'};if(m[e.key])keys[m[e.key]]=false});
+draw();ui()})();
+</script></body></html>
